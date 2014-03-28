@@ -38,10 +38,10 @@ public class BézierKurven extends JApplet {
     private Point punkte[][] = new Point[30][30];//speichert die Punkte
     private Point kurve[] = new Point[30]; //speichert die Punkte der Bérset Kurve
     private JPanel kordPunkt[] = new JPanel[30], menu; //zum anzeigen der Punkte auf dem Bildschirm
-    JComboBox auswahl;
+    JComboBox PunktAuswahl;
     JButton verschieben;
-    JLabel pP, pX, pY;
-    JTextField xK, yK;
+    JLabel lP, lXKord, lYKord;
+    JTextField eingabeX, eingabeY;
     //Objekte
     private JPanel hintergrund;
     private MouseEvent event; //zum spiechern des Mouse events
@@ -53,17 +53,17 @@ public class BézierKurven extends JApplet {
     @Override
     public void init() {
         //erstellen der Objekte
-        createObjects();
+        initObjekte();
         //ertellen eines Mausklick Menüs
         createPopupMenu();
         this.setSize(1000, 600);
-        auswahl.addItemListener(new ItemListener() {
+        PunktAuswahl.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent arg0) {
-                int index = auswahl.getSelectedIndex();
+                int index = PunktAuswahl.getSelectedIndex();
                 try {
-                    xK.setText("" + punkte[0][index].x);
-                    yK.setText("" + punkte[0][index].y);
+                    eingabeX.setText("" + punkte[0][index].x);
+                    eingabeY.setText("" + punkte[0][index].y);
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(null, "Error ", "Bézier Kurven", JOptionPane.WARNING_MESSAGE);
                 }
@@ -72,11 +72,11 @@ public class BézierKurven extends JApplet {
         verschieben.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                int index = auswahl.getSelectedIndex();
-                punkte[0][index].x = Integer.parseInt(xK.getText());
-                punkte[0][index].y = Integer.parseInt(yK.getText());
+                int index = PunktAuswahl.getSelectedIndex();
+                punkte[0][index].x = Integer.parseInt(eingabeX.getText());
+                punkte[0][index].y = Integer.parseInt(eingabeY.getText());
                 hintergrund.repaint();
-                Reset2();
+                ResetKordinatenPunkte();
                 try {
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(null, "Error ", "Bézier Kurven", JOptionPane.WARNING_MESSAGE);
@@ -87,28 +87,28 @@ public class BézierKurven extends JApplet {
     }
 
     //erstellt Objekte
-    private void createObjects() {
+    private void initObjekte() {
         Container contentPane = getContentPane();//Container erstellen
         contentPane.setLayout(new BorderLayout());//Layout des Containers bestimmen
         //Objekterstellung
         menu = new JPanel();
-        pP = new JLabel("Punkt:");
-        auswahl = new JComboBox();
-        pX = new JLabel("X-Kord.");
-        xK = new JTextField();
-        xK.setPreferredSize(new Dimension(40, 20));
-        pY = new JLabel("Y-Kord.");
-        yK = new JTextField();
-        yK.setPreferredSize(new Dimension(40, 20));
+        lP = new JLabel("Punkt:");
+        PunktAuswahl = new JComboBox();
+        lXKord = new JLabel("X-Kord.");
+        eingabeX = new JTextField();
+        eingabeX.setPreferredSize(new Dimension(40, 20));
+        lYKord = new JLabel("Y-Kord.");
+        eingabeY = new JTextField();
+        eingabeY.setPreferredSize(new Dimension(40, 20));
         verschieben = new JButton("Punkt verschieben");
         //OBjekte zum menu hinzufügen
 //        contentPane.add(menu,BorderLayout.NORTH);
-        menu.add(pP);
-        menu.add(auswahl);
-        menu.add(pX);
-        menu.add(xK);
-        menu.add(pY);
-        menu.add(yK);
+        menu.add(lP);
+        menu.add(PunktAuswahl);
+        menu.add(lXKord);
+        menu.add(eingabeX);
+        menu.add(lYKord);
+        menu.add(eingabeY);
         menu.add(verschieben);
         //Erstellung eines Hintergrund und Positionierung
         hintergrund = new DrawPanel();
@@ -122,40 +122,40 @@ public class BézierKurven extends JApplet {
 
     //erstellt PopupMenu
     private void createPopupMenu() {
-        JMenuItem menuItem1, menuItem2, menuItem3;//Die Menü-unter-Punkte
+        JMenuItem menuNeuerPunkt, menuKurve, menuReset;//Die Menü-unter-Punkte
         //Create the popup menu.
         JPopupMenu popup = new JPopupMenu();
-        menuItem1 = new JMenuItem("Einen neuen Punkt erzeugen");
-        menuItem1.addMouseListener(new MouseAdapter() {
+        menuNeuerPunkt = new JMenuItem("Einen neuen Punkt erzeugen");
+        menuNeuerPunkt.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent event) {
                 getMouseLocation();
             }
         });
-        popup.add(menuItem1);
-        menuItem2 = new JMenuItem("Bézier Kurve zeichnen");
-        menuItem2.addMouseListener(new MouseAdapter() {
+        popup.add(menuNeuerPunkt);
+        menuKurve = new JMenuItem("Bézier Kurve zeichnen");
+        menuKurve.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent event) {
                 Punkterechnen();
             }
         });
-        popup.add(menuItem2);
-        menuItem3 = new JMenuItem("Reset");
-        menuItem3.addMouseListener(new MouseAdapter() {
+        popup.add(menuKurve);
+        menuReset = new JMenuItem("Reset");
+        menuReset.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent event) {
-                Reset0();
+                ResetHintergrundPunkte();
             }
         });
-        popup.add(menuItem3);
+        popup.add(menuReset);
         //Add listener to the text area so the popup menu can come up.
         MouseListener popupListener = new PopupListener(popup);
         hintergrund.addMouseListener(popupListener);
     }
 
     //Reset der Variablen und des Hintergrundes
-    private void Reset0() {
+    private void ResetHintergrundPunkte() {
         for (int index = 0; index < 30; index++) {
             kurve[index] = null;
             try {
@@ -172,13 +172,13 @@ public class BézierKurven extends JApplet {
     }
 
     //Reset der Bersét-Kurve
-    private void Reset1() {
+    private void ResetBersetKurve() {
         for (int index = 0; index < kurve.length; index++) {
             kurve[index] = null;
         }
     }
     
-    private void Reset2() {
+    private void ResetKordinatenPunkte() {
         for (int index = 0; index < kordPunkt.length; index++) {
             try {
                 kordPunkt[index].setLocation(punkte[0][index]);
@@ -193,7 +193,7 @@ public class BézierKurven extends JApplet {
         Point p = event.getPoint();
         //übergeben der Daten
         setPunkt(p);
-        Reset2();
+        ResetKordinatenPunkte();
     }
 
     //setzten der Punkte
@@ -223,7 +223,7 @@ public class BézierKurven extends JApplet {
                     hintergrund.repaint();
                 }
             });
-            auswahl.addItem("" + zähler);
+            PunktAuswahl.addItem("" + zähler);
             kordPunkt[zähler].setLocation(p);
             zähler++;//bei einem erfolgreichen durchgang wird der zähler erhöht
         } catch (Exception e) {
@@ -234,7 +234,7 @@ public class BézierKurven extends JApplet {
     //Methode zum berechnen der Bésier Punkte
     public void Punkterechnen() {
         //Kurve wird zurückgessezt
-        Reset1();
+        ResetBersetKurve();
         //Startpunkt der Besier Kurvee wird gesetzt
         kurve[0] = punkte[0][0];
         //Schleife die verschiedene t für die Berechnung setzt
@@ -246,7 +246,7 @@ public class BézierKurven extends JApplet {
                     if (punkte[index][i + 1] == null) {
                         break;
                     }
-                    //Berechnung des Punktes mit der Hilfe von t Speicherung in dme nächsten punkte Array
+                    //Berechnung des Punktes mit der Hilfe von t Speicherung in dem nächsten punkte Array
                     double x1 = ((1 - t) * punkte[index][i].x) + (t * punkte[index][i + 1].x);
                     double y1 = ((1 - t) * punkte[index][i].y) + (t * punkte[index][i + 1].y);
                     int x2 = (int) x1;
