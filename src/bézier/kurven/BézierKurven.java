@@ -76,6 +76,7 @@ public class BézierKurven extends JApplet {
                 punkte[0][index].x = Integer.parseInt(xK.getText());
                 punkte[0][index].y = Integer.parseInt(yK.getText());
                 hintergrund.repaint();
+                Reset2();
                 try {
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(null, "Error ", "Bézier Kurven", JOptionPane.WARNING_MESSAGE);
@@ -176,6 +177,15 @@ public class BézierKurven extends JApplet {
             kurve[index] = null;
         }
     }
+    
+    private void Reset2() {
+        for (int index = 0; index < kordPunkt.length; index++) {
+            try {
+                kordPunkt[index].setLocation(punkte[0][index]);
+            } catch (Exception ex) {
+            }
+        }
+    }
 
     //erstellen eines neuen Punktes auf Knopfdruck 
     private void getMouseLocation() {
@@ -183,6 +193,7 @@ public class BézierKurven extends JApplet {
         Point p = event.getPoint();
         //übergeben der Daten
         setPunkt(p);
+        Reset2();
     }
 
     //setzten der Punkte
@@ -192,7 +203,6 @@ public class BézierKurven extends JApplet {
             punkte[0][zähler] = new Point(p);
             kordPunkt[zähler] = new JPanel();
             kordPunkt[zähler].setSize(10, 10);
-            kordPunkt[zähler].setLocation(p);
             kordPunkt[zähler].setBackground(Color.red);
             kordPunkt[zähler].setName("" + zähler);
             hintergrund.add(kordPunkt[zähler]);
@@ -214,6 +224,7 @@ public class BézierKurven extends JApplet {
                 }
             });
             auswahl.addItem("" + zähler);
+            kordPunkt[zähler].setLocation(p);
             zähler++;//bei einem erfolgreichen durchgang wird der zähler erhöht
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Es können keine weiteren Punkte erstellt werden ", "Bézier Kurven", JOptionPane.WARNING_MESSAGE);
