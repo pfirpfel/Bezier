@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package bézier.kurven;
+package bezier.kurven;
 
 import java.awt.Point;
 import org.junit.After;
@@ -18,9 +18,9 @@ import static org.junit.Assert.*;
  *
  * @author Elias
  */
-public class BézierKurvenTest {
+public class BezierKurvenTest {
     
-    public BézierKurvenTest() {
+    public BezierKurvenTest() {
     }
     
     @BeforeClass
@@ -40,37 +40,37 @@ public class BézierKurvenTest {
     }
 
     /**
-     * Test of init method, of class BézierKurven.
+     * Test of init method, of class BezierKurven.
      */
     @Test
     public void testInit() {
         System.out.println("init");
-        BézierKurven instance = new BézierKurven();
+        BezierKurven instance = new BezierKurven();
         instance.init();
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }
 
     /**
-     * Test of setPunkt method, of class BézierKurven.
+     * Test of setPunkt method, of class BezierKurven.
      */
     @Test
     public void testSetPunkt() {
         System.out.println("setPunkt");
         Point p = null;
-        BézierKurven instance = new BézierKurven();
+        BezierKurven instance = new BezierKurven();
         instance.setPunkt(p);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }
 
     /**
-     * Test of Punkterechnen method, of class BézierKurven.
+     * Test of Punkterechnen method, of class BezierKurven.
      */
     @Test
     public void testPunkterechnen() {
         System.out.println("Punkterechnen");
-        BézierKurven instance = new BézierKurven();
+        BezierKurven instance = new BezierKurven();
         instance.Punkterechnen();
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
