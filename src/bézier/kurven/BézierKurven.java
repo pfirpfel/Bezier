@@ -52,11 +52,12 @@ public class BézierKurven extends JApplet {
      */
     @Override
     public void init() {
-        //erstellen der Objekte
-        initObjekte();
-        //ertellen eines Mausklick Menüs
-        createPopupMenu();
-        this.setSize(1000, 600);
+        initObjekte();//erstellen der Objekte
+        initListener();//ertellen der Listener
+        createPopupMenu();//ertellen eines Mausklick Menüs
+        this.setSize(1000, 600);//setzten der Grösse
+    }
+    private void initListener(){
         PunktAuswahl.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent arg0) {
@@ -85,8 +86,6 @@ public class BézierKurven extends JApplet {
             }
         });
     }
-
-    //erstellt Objekte
     private void initObjekte() {
         Container contentPane = getContentPane();//Container erstellen
         contentPane.setLayout(new BorderLayout());//Layout des Containers bestimmen
@@ -101,7 +100,7 @@ public class BézierKurven extends JApplet {
         eingabeY = new JTextField();
         eingabeY.setPreferredSize(new Dimension(40, 20));
         verschieben = new JButton("Punkt verschieben");
-        //OBjekte zum menu hinzufügen
+        //Objekte zum menu hinzufügen
 //        contentPane.add(menu,BorderLayout.NORTH);
         menu.add(lP);
         menu.add(PunktAuswahl);
@@ -119,8 +118,6 @@ public class BézierKurven extends JApplet {
         JLabel info = new JLabel("Es können maximal 30 Punkte übergeben werden.");
         hintergrund.add(info);
     }
-
-    //erstellt PopupMenu
     private void createPopupMenu() {
         JMenuItem menuNeuerPunkt, menuKurve, menuReset;//Die Menü-unter-Punkte
         //Create the popup menu.
@@ -153,9 +150,8 @@ public class BézierKurven extends JApplet {
         MouseListener popupListener = new PopupListener(popup);
         hintergrund.addMouseListener(popupListener);
     }
-
-    //Reset der Variablen und des Hintergrundes
     private void ResetHintergrundPunkte() {
+        //Reset der Variablen und des Hintergrundes
         for (int index = 0; index < 30; index++) {
             kurve[index] = null;
             try {
@@ -170,9 +166,8 @@ public class BézierKurven extends JApplet {
         hintergrund.repaint();
         zähler = 0;
     }
-
-    //Reset der Bersét-Kurve
     private void ResetBersetKurve() {
+        //Reset der Bersét-Kurve
         for (int index = 0; index < kurve.length; index++) {
             kurve[index] = null;
         }
