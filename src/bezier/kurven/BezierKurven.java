@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package bézier.kurven;
+package bezier.kurven;
 //imports
 
 import java.awt.BorderLayout;
@@ -31,10 +31,10 @@ import javax.swing.JTextField;
  *
  * @author Elias
  */
-public class BézierKurven extends JApplet {
+public class BezierKurven extends JApplet {
 
     //Variablen
-    private int zähler = 0; //zählt die erstellten Punkte
+    private int zaehler = 0; //zählt die erstellten Punkte
     private Point punkte[][] = new Point[30][30];//speichert die Punkte
     private Point kurve[] = new Point[30]; //speichert die Punkte der Bérset Kurve
     private JPanel kordPunkt[] = new JPanel[30], menu; //zum anzeigen der Punkte auf dem Bildschirm
@@ -164,7 +164,7 @@ public class BézierKurven extends JApplet {
             }
         }
         hintergrund.repaint();
-        zähler = 0;
+        zaehler = 0;
     }
     private void ResetBersetKurve() {
         //Reset der Bersét-Kurve
@@ -195,19 +195,19 @@ public class BézierKurven extends JApplet {
     public void setPunkt(Point p) {
         //es werden die Punkte mit den Mauskordinaten gesetzt, sofern es noch Platz hat
         try {
-            punkte[0][zähler] = new Point(p);
-            kordPunkt[zähler] = new JPanel();
-            kordPunkt[zähler].setSize(10, 10);
-            kordPunkt[zähler].setBackground(Color.red);
-            kordPunkt[zähler].setName("" + zähler);
-            hintergrund.add(kordPunkt[zähler]);
+            punkte[0][zaehler] = new Point(p);
+            kordPunkt[zaehler] = new JPanel();
+            kordPunkt[zaehler].setSize(10, 10);
+            kordPunkt[zaehler].setBackground(Color.red);
+            kordPunkt[zaehler].setName("" + zaehler);
+            hintergrund.add(kordPunkt[zaehler]);
             hintergrund.repaint();
-            kordPunkt[zähler].addMouseListener(new MouseAdapter() {
+            kordPunkt[zaehler].addMouseListener(new MouseAdapter() {
                 @Override
                 public void mousePressed(MouseEvent event) {
                 }
             });
-            kordPunkt[zähler].addMouseListener(new MouseAdapter() {
+            kordPunkt[zaehler].addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseReleased(MouseEvent event) {
                     //beim Losslassen der  Maus wird die aktuelle Mausposition in die Liste und das Panel geschrieben, anschliessend wird der Hintergrund neu ausgegeben.
@@ -218,9 +218,9 @@ public class BézierKurven extends JApplet {
                     hintergrund.repaint();
                 }
             });
-            PunktAuswahl.addItem("" + zähler);
-            kordPunkt[zähler].setLocation(p);
-            zähler++;//bei einem erfolgreichen durchgang wird der zähler erhöht
+            PunktAuswahl.addItem("" + zaehler);
+            kordPunkt[zaehler].setLocation(p);
+            zaehler++;//bei einem erfolgreichen durchgang wird der zaehler erhöht
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Es können keine weiteren Punkte erstellt werden ", "Bézier Kurven", JOptionPane.WARNING_MESSAGE);
         }
@@ -262,7 +262,7 @@ public class BézierKurven extends JApplet {
         //Endpunkt der Bésier Kurve wird in das letzte freie Feld geseetzt
         for (int a = 0; a < kurve.length; a++) {
             if (kurve[a] == null) {
-                kurve[a] = punkte[0][zähler - 1];
+                kurve[a] = punkte[0][zaehler - 1];
             }
         }
         hintergrund.repaint();
