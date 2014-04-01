@@ -3,23 +3,17 @@ package bezier.kurven;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
-//import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Point;
-//import java.awt.event.ItemEvent;
-//import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import javax.swing.JApplet;
-//import javax.swing.JButton;
-//import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-//import javax.swing.JTextField;
 
 /**
  *
@@ -29,16 +23,9 @@ public class BezierKurvenApplet extends JApplet {
 
     //Variablen
     private int bezierKurvenzaehler = 0; //zählt die erstellten Punkte
-//    private JPanel  menu; //zum anzeigen der Punkte auf dem Bildschirm
-    //speichern der unterschiedlichen Kurven
     private BezierKurvenBerechnung bezierKurven[] = new BezierKurvenBerechnung[10];
-//    JComboBox PunktAuswahl;
-//    JButton verschieben;
-//    JLabel lP, lXKord, lYKord;
-//    JTextField eingabeX, eingabeY;
-    //Objekte
     private JPanel hintergrund;
-    private MouseEvent event; //zum spiechern des Mouse events
+    private MouseEvent klickEvent; //zum spiechern des Mouse events
 
     /**
      * Initialization method that will be called after the applet is loaded into
@@ -47,66 +34,15 @@ public class BezierKurvenApplet extends JApplet {
     @Override
     public void init() {
         initObjekte();//erstellen der Objekte
-//        initListener();//ertellen der Listener
         createPopupMenu();//ertellen eines Mausklick Menüs
         this.setSize(1000, 600);//setzten der Grösse
         //estellen eriner neuen BezierKurve
         bezierKurven[bezierKurvenzaehler] = new BezierKurvenBerechnung(true, null, null, null);
     }
 
-    private void initListener() {
-//        PunktAuswahl.addItemListener(new ItemListener() {
-//            @Override
-//            public void itemStateChanged(ItemEvent arg0) {
-//                int index = PunktAuswahl.getSelectedIndex();
-//                try {
-//                    eingabeX.setText("" + punkte[0][index].x);
-//                    eingabeY.setText("" + punkte[0][index].y);
-//                } catch (Exception ex) {
-//                    JOptionPane.showMessageDialog(null, "Error ", "Bézier Kurven", JOptionPane.WARNING_MESSAGE);
-//                }
-//            }
-//        });
-//        verschieben.addMouseListener(new java.awt.event.MouseAdapter() {
-//            @Override
-//            public void mouseClicked(java.awt.event.MouseEvent evt) {
-//                int index = PunktAuswahl.getSelectedIndex();
-//                punkte[0][index].x = Integer.parseInt(eingabeX.getText());
-//                punkte[0][index].y = Integer.parseInt(eingabeY.getText());
-//                hintergrund.repaint();
-//                resetKordinatenPunkte();
-//                try {
-//                } catch (Exception ex) {
-//                    JOptionPane.showMessageDialog(null, "Error ", "Bézier Kurven", JOptionPane.WARNING_MESSAGE);
-//                }
-//
-//            }
-//        });
-    }
-
     private void initObjekte() {
         Container contentPane = getContentPane();//Container erstellen
         contentPane.setLayout(new BorderLayout());//Layout des Containers bestimmen
-//        //Objekterstellung
-//        menu = new JPanel();
-//        lP = new JLabel("Punkt:");
-//        PunktAuswahl = new JComboBox();
-//        lXKord = new JLabel("X-Kord.");
-//        eingabeX = new JTextField();
-//        eingabeX.setPreferredSize(new Dimension(40, 20));
-//        lYKord = new JLabel("Y-Kord.");
-//        eingabeY = new JTextField();
-//        eingabeY.setPreferredSize(new Dimension(40, 20));
-//        verschieben = new JButton("Punkt verschieben");
-//        //Objekte zum menu hinzufügen
-//        contentPane.add(menu,BorderLayout.NORTH);
-//        menu.add(lP);
-//        menu.add(PunktAuswahl);
-//        menu.add(lXKord);
-//        menu.add(eingabeX);
-//        menu.add(lYKord);
-//        menu.add(eingabeY);
-//        menu.add(verschieben);
         //Erstellung eines Hintergrund und Positionierung
         hintergrund = new DrawPanel();
         contentPane.add(hintergrund, BorderLayout.CENTER);
@@ -118,7 +54,7 @@ public class BezierKurvenApplet extends JApplet {
     }
 
     private void createPopupMenu() {
-        JMenuItem menuNeuerPunkt, menuKurve, menuReset, menuKurveerweitern;//Die Menü-unter-Punkte
+        JMenuItem menuNeuerPunkt,menuReset, menuKurveerweitern;//Die Menü-unter-Punkte
         //Create the popup menu.
         JPopupMenu popup = new JPopupMenu();
         menuNeuerPunkt = new JMenuItem("Einen neuen Punkt erzeugen");
@@ -126,21 +62,13 @@ public class BezierKurvenApplet extends JApplet {
             @Override
             public void mousePressed(MouseEvent event) {
                 //auslesen der Position der Maus
-                Point p = event.getPoint();
+                Point p = klickEvent.getPoint();
                 //übergeben der Daten
                 bezierKurven[bezierKurvenzaehler].setPunkt(p);
                 resetKordinatenPunkte();
             }
         });
         popup.add(menuNeuerPunkt);
-        menuKurve = new JMenuItem("Bézier Kurve zeichnen");
-        menuKurve.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent event) {
-                bezierKurven[bezierKurvenzaehler].Punkterechnen();
-            }
-        });
-        popup.add(menuKurve);
         menuKurveerweitern = new JMenuItem("Bézier Kurve erweitern");
         menuKurveerweitern.addMouseListener(new MouseAdapter() {
             @Override
@@ -199,7 +127,7 @@ public class BezierKurvenApplet extends JApplet {
     //erstellen eines neuen Punktes auf Knopfdruck 
     private void getMouseLocation() {
         //auslesen der Position der Maus
-        Point p = event.getPoint();
+        Point p = klickEvent.getPoint();
         //übergeben der Daten
         bezierKurven[bezierKurvenzaehler].setPunkt(p);
         resetKordinatenPunkte();
@@ -222,7 +150,9 @@ public class BezierKurvenApplet extends JApplet {
                 kordPunkt[punkteZaehler] = parentPan;
                 int xVersch = (-1) * (startpunkt.x - parentPunkt.x);
                 int yVersch = (-1) * (startpunkt.y - parentPunkt.y);
-                Point p= new Point(xVersch, yVersch);
+                xVersch = startpunkt.x - xVersch;
+                yVersch = startpunkt.y - yVersch;
+                Point p = new Point(xVersch, yVersch);
                 setPunkt(p);
             }
         }
@@ -272,15 +202,17 @@ public class BezierKurvenApplet extends JApplet {
             Point pv = punkt.getLocation();
             punkt.setLocation(getMousePosition());
             Point pn = punkt.getLocation();
-            int xVersch = (-1) * (pn.x - pv.x);
-            int yVersch = (-1) * (pn.y - pv.y);
+            int xVersch = (pv.x - pn.x);
+            int yVersch = (pv.y - pn.y);
+            xVersch = pn.x - xVersch;
+            yVersch = pn.y - yVersch;
             int a = Integer.parseInt(punkt.getName());
             eingabePunkte[a] = punkt.getLocation();
             try {
-                if (kordPunkt[0].equals(punkt)) {
-                    parentPan.setLocation(xVersch, yVersch);
-                } else if (kordPunkt[punkteZaehler - 1].equals(punkt)) {
-                    childPan.setLocation(xVersch, yVersch);
+                if (kordPunkt[1].equals(punkt)) {
+                    parentPan.setLocation(parentPan.getLocation().x+xVersch, parentPan.getLocation().y+yVersch);
+                } else if (kordPunkt[punkteZaehler - 2].equals(punkt)) {
+                    childPan.setLocation(childPan.getLocation().x+xVersch, childPan.getLocation().y+yVersch);
                 }
             } catch (Exception ex) {
             }
@@ -331,7 +263,6 @@ public class BezierKurvenApplet extends JApplet {
                     kurvenPunkte[a] = punkte[0][punkteZaehler - 1];
                 }
             }
-            hintergrund.repaint();
         }
 
         public void zeichenPunkte() {
@@ -351,6 +282,9 @@ public class BezierKurvenApplet extends JApplet {
         }
 
         public Point[] getkurvenPunkte() {
+            if(punkteZaehler>1){
+                Punkterechnen();
+            } 
             return kurvenPunkte;
         }
 
@@ -396,7 +330,7 @@ public class BezierKurvenApplet extends JApplet {
         @Override
         public void mousePressed(MouseEvent e) {
             maybeShowPopup(e);
-            event = e;
+            klickEvent = e;
         }
 
         @Override
@@ -419,7 +353,7 @@ public class BezierKurvenApplet extends JApplet {
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
             //für alle Abschnitte
-            for (int pz = 0; pz < bezierKurvenzaehler; pz++) {
+            for (int pz = 0; pz <= bezierKurvenzaehler; pz++) {
                 if (bezierKurven[pz] == null) {
                     break;
                 }
