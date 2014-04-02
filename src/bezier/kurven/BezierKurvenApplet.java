@@ -49,7 +49,7 @@ public class BezierKurvenApplet extends JApplet {
         //Eigenschaften des Hintergrundes
         hintergrund.setBackground(Color.white);
         //InfoLabel
-        JLabel info = new JLabel("Pro Kurve können maximal 30 Punkte übergeben werden. Es können max 10 Kurven erstellt werden. Die Punkte können mit der Maus verschobenwerden");
+        JLabel info = new JLabel("Pro Kurve k\u00F6nnen maximal 30 Punkte \u00FCbergeben werden. Es k\u00F6nnen max 10 Kurven erstellt werden. Die Punkte k\u00F6nnen mit der Maus verschoben werden.");
         hintergrund.add(info);
     }
 
@@ -69,12 +69,12 @@ public class BezierKurvenApplet extends JApplet {
             }
         });
         popup.add(menuNeuerPunkt);
-        menuKurveerweitern = new JMenuItem("Bézier Kurve erweitern");
+        menuKurveerweitern = new JMenuItem("B\u00E9zier Kurve erweitern");
         menuKurveerweitern.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent event) {
                 if (bezierKurven[bezierKurvenzaehler].getPunktezaehler() < 3) {
-                    JOptionPane.showMessageDialog(null, "Sie müssen zuerst min. 3 Punkte erstellen um eine neue Kurve zu erstellen. ", "Bézier Kurven", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Sie m\u00FCssen zuerst min. 3 Punkte erstellen um eine neue Kurve zu erstellen. ", "B\u00E9zier Kurven", JOptionPane.WARNING_MESSAGE);
                 } else {
                     bezierKurvenzaehler++;//Erstellen einer neuen Kurve
                     bezierKurven[bezierKurvenzaehler] = new BezierKurvenBerechnung(false, bezierKurven[bezierKurvenzaehler - 1]);
@@ -183,7 +183,7 @@ public class BezierKurvenApplet extends JApplet {
 
                 punkteZaehler++;//bei einem erfolgreichen durchgang wird der punkteZaehler erhöht
             } catch (Exception e) {
-                JOptionPane.showMessageDialog(null, "Es können keine weiteren Punkte erstellt werden ", "Bézier Kurven", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Es k\u00F6nnen keine weiteren Punkte erstellt werden.", "B\u00E9zier Kurven", JOptionPane.WARNING_MESSAGE);
             }
         }
 
