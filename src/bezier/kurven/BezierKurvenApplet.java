@@ -37,7 +37,7 @@ public class BezierKurvenApplet extends JApplet {
         createPopupMenu();//ertellen eines Mausklick Menüs
         this.setSize(1000, 600);//setzten der Grösse
         //estellen eriner neuen BezierKurve
-        bezierKurven[bezierKurvenzaehler] = new BezierKurvenBerechnung(true, null, null, null, null);
+        bezierKurven[bezierKurvenzaehler] = new BezierKurvenBerechnung(true, null);
     }
 
     private void initObjekte() {
@@ -73,16 +73,12 @@ public class BezierKurvenApplet extends JApplet {
         menuKurveerweitern.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent event) {
-                if (bezierKurven[bezierKurvenzaehler].getPunktezaehler() < 2) {
+                if (bezierKurven[bezierKurvenzaehler].getPunktezaehler() < 3) {
                     JOptionPane.showMessageDialog(null, "Sie müssen zuerst min. 3 Punkte erstellen um eine neue Kurve zu erstellen. ", "Bézier Kurven", JOptionPane.WARNING_MESSAGE);
                 } else {
-                    JPanel panels[] = bezierKurven[bezierKurvenzaehler].getKordPunkte();
-                    Point punkte[] = bezierKurven[bezierKurvenzaehler].getEingabePunkte();
-                    int zaehler = bezierKurven[bezierKurvenzaehler].getPunktezaehler();
                     bezierKurvenzaehler++;//Erstellen einer neuen Kurve
-                    bezierKurven[bezierKurvenzaehler] = new BezierKurvenBerechnung(false, panels[zaehler - 2], panels[zaehler - 1], punkte[zaehler - 2], punkte[zaehler - 1]);
-                    JPanel panel[] = bezierKurven[bezierKurvenzaehler].getKordPunkte();
-                    bezierKurven[bezierKurvenzaehler - 1].setChildPan(panel[1]);
+                    bezierKurven[bezierKurvenzaehler] = new BezierKurvenBerechnung(false, bezierKurven[bezierKurvenzaehler - 1]);
+                    bezierKurven[bezierKurvenzaehler - 1].setChildKlasse(bezierKurven[bezierKurvenzaehler]);
                 }
             }
         });
@@ -111,25 +107,12 @@ public class BezierKurvenApplet extends JApplet {
         }
         bezierKurvenzaehler = 0;
         hintergrund.repaint();
-        bezierKurven[bezierKurvenzaehler] = new BezierKurvenBerechnung(true, null, null, null, null);
+        bezierKurven[bezierKurvenzaehler] = new BezierKurvenBerechnung(true, null);
 
-    }
-
-    private void resetBersetKurve() {
-        bezierKurven[bezierKurvenzaehler].resetBersetKurve();
     }
 
     private void resetKordinatenPunkte() {
         bezierKurven[bezierKurvenzaehler].resetKordinatenPunkte();
-    }
-
-    //erstellen eines neuen Punktes auf Knopfdruck 
-    private void getMouseLocation() {
-        //auslesen der Position der Maus
-        Point p = klickEvent.getPoint();
-        //übergeben der Daten
-        bezierKurven[bezierKurvenzaehler].setPunkt(p);
-        resetKordinatenPunkte();
     }
 
     private class BezierKurvenBerechnung {
@@ -138,28 +121,33 @@ public class BezierKurvenApplet extends JApplet {
         private int punkteZaehler = 0;
         private Point eingabePunkte[] = new Point[30];
         private Point kurvenPunkte[] = new Point[30]; //speichert die Punkte der Bérset Kurve
-        private JPanel kordPunkt[] = new JPanel[30], parentPan, childPan;
+        private JPanel kordPunkt[] = new JPanel[30];
+        private BezierKurvenBerechnung parent, child;
         private boolean erster;
 
-        public BezierKurvenBerechnung(boolean erster, JPanel parentPan, JPanel startPan, Point parentPunkt, Point startpunkt) {
+        public BezierKurvenBerechnung(boolean erster, BezierKurvenBerechnung parent) {
             this.erster = erster;
-            this.parentPan = parentPan;
+            this.parent = parent;
             if (erster == false) {
-                kordPunkt[punkteZaehler] = startPan;
-                setPunkt(startpunkt);
-                int xVersch = (-1) * (startpunkt.x - parentPunkt.x);
-                int yVersch = (-1) * (startpunkt.y - parentPunkt.y);
-                xVersch = startpunkt.x - xVersch;
-                yVersch = startpunkt.y - yVersch;
+                JPanel panels[] = parent.getKordPunkte();
+                Point punkte[] = parent.getEingabePunkte();
+                int zaehler = parent.getPunktezaehler();
+
+                kordPunkt[punkteZaehler] = panels[zaehler - 1];
+                setPunkt(punkte[zaehler - 1]);
+                int xVersch = (punkte[zaehler - 1].x - punkte[zaehler - 2].x);
+                int yVersch = (punkte[zaehler - 1].y - punkte[zaehler - 2].y);
+                xVersch = punkte[zaehler - 1].x + xVersch;
+                yVersch = punkte[zaehler - 1].y + yVersch;
                 Point p = new Point(xVersch, yVersch);
                 setPunkt(p);
-                erster=true;
+                erster = true;
                 hintergrund.repaint();
             }
         }
 
-        public void setChildPan(JPanel childPan) {
-            this.childPan = childPan;
+        public void setChildKlasse(BezierKurvenBerechnung child) {
+            this.child = child;
         }
 
         //setzten der Punkte
@@ -205,21 +193,43 @@ public class BezierKurvenApplet extends JApplet {
             Point pn = punkt.getLocation();
             int xVersch = (pv.x - pn.x);
             int yVersch = (pv.y - pn.y);
-            xVersch = pn.x - xVersch;
-            yVersch = pn.y - yVersch;
             int a = Integer.parseInt(punkt.getName());
             eingabePunkte[a] = punkt.getLocation();
-//            try {
-//                if (kordPunkt[1].equals(punkt)) {
-//                    parentPan.setLocation(parentPan.getLocation().x + xVersch, parentPan.getLocation().y + yVersch);
-//                } else if (kordPunkt[punkteZaehler - 2].equals(punkt)) {
-//                    childPan.setLocation(childPan.getLocation().x + xVersch, childPan.getLocation().y + yVersch);
-//                }
-//            } catch (Exception ex) {
-//            }
+            try {
+                if (kordPunkt[1].equals(punkt)) {
+                    Point punkte[] = parent.getEingabePunkte();
+                    int zaehler = parent.getPunktezaehler();
+                    Point p = new Point(punkte[zaehler - 2].x + xVersch, punkte[zaehler - 2].y + yVersch);
+                    parent.setKordPunkte(zaehler-2, p);
+                } else if (kordPunkt[punkteZaehler - 2].equals(punkt)) {
+                    Point punkte[] = child.getEingabePunkte();
+                    Point p = new Point(punkte[1].x + xVersch, punkte[1].y + yVersch);
+                    child.setKordPunkte(1, p);
+                } else if(kordPunkt[punkteZaehler-1].equals(punkt)&&child!=null){
+                    Point p = new Point(eingabePunkte[punkteZaehler - 2].x - xVersch, eingabePunkte[punkteZaehler - 2].y - yVersch);
+                    this.setKordPunkte(punkteZaehler-2, p); 
+                    child.setPosition(neuePosition);
+                    Point punkte[] = child.getEingabePunkte();
+                    Point p2 = new Point(punkte[1].x - xVersch, punkte[1].y - yVersch);
+                    child.setKordPunkte(1, p2);
+                }
+            } catch (Exception ex) {
+                //System.out.println("error");
+            }
             hintergrund.repaint();
         }
 
+        public void setKordPunkte(int zaehler, Point neuePosition) {
+            eingabePunkte[zaehler] = neuePosition;
+            kordPunkt[zaehler].setLocation(neuePosition);
+            hintergrund.repaint();
+        }
+        public void setPosition(Point pn){
+            eingabePunkte[0] = pn;
+        }
+        public void setPanel(Point neuePosition){
+            
+        }
         //Methode zum berechnen der Bésier Punkte
         public void Punkterechnen() {
             //Kurve wird zurückgessezt
@@ -266,10 +276,6 @@ public class BezierKurvenApplet extends JApplet {
             }
         }
 
-        public void zeichenPunkte() {
-
-        }
-
         public Point[] getEingabePunkte() {
             return eingabePunkte;
         }
@@ -307,8 +313,9 @@ public class BezierKurvenApplet extends JApplet {
             }
             hintergrund.repaint();
         }
-        public void removeLastKordPunkt(){
-            kordPunkt[punkteZaehler-1].removeMouseListener(null);
+
+        public void removeLastKordPunkt() {
+            kordPunkt[punkteZaehler - 1].removeMouseListener(null);
         }
 
         private void resetKordinatenPunkte() {
@@ -323,7 +330,7 @@ public class BezierKurvenApplet extends JApplet {
     }
 
 //ersteellen der Popup Klasse
-    class PopupListener extends MouseAdapter {
+    private class PopupListener extends MouseAdapter {
 
         JPopupMenu popup;//PopupMenü Variable
 
@@ -351,7 +358,7 @@ public class BezierKurvenApplet extends JApplet {
     }
 
     //Paint Klasse
-    class DrawPanel extends JPanel {
+    private class DrawPanel extends JPanel {
 
         @Override
         protected void paintComponent(Graphics g) {
