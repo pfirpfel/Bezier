@@ -39,7 +39,11 @@ public class BezierKurvenApplet extends JApplet {
         //estellen eriner neuen BezierKurve
         bezierKurven[bezierKurvenzaehler] = new BezierKurvenBerechnung(true, null);
     }
-
+    @Override
+    public void start(){
+        this.refreshPanels();
+    }
+            
     private void initObjekte() {
         Container contentPane = getContentPane();//Container erstellen
         contentPane.setLayout(new BorderLayout());//Layout des Containers bestimmen
@@ -47,14 +51,14 @@ public class BezierKurvenApplet extends JApplet {
         hintergrund = new DrawPanel();
         contentPane.add(hintergrund, BorderLayout.CENTER);
         //Eigenschaften des Hintergrundes
-        hintergrund.setBackground(Color.white);
+        hintergrund.setBackground(Color.lightGray);
         //InfoLabel
         JLabel info = new JLabel("Pro Kurve k\u00F6nnen maximal 30 Punkte \u00FCbergeben werden. Es k\u00F6nnen max 10 Kurven erstellt werden. Die Punkte k\u00F6nnen mit der Maus verschoben werden.");
         hintergrund.add(info);
     }
 
     private void createPopupMenu() {
-        JMenuItem menuNeuerPunkt, menuReset, menuKurveerweitern;//Die Menü-unter-Punkte
+        JMenuItem menuNeuerPunkt, menuReset, menuKurveerweitern,menuPanelRefresh;//Die Menü-unter-Punkte
         //Create the popup menu.
         JPopupMenu popup = new JPopupMenu();
         menuNeuerPunkt = new JMenuItem("Einen neuen Punkt erzeugen");
@@ -83,6 +87,15 @@ public class BezierKurvenApplet extends JApplet {
             }
         });
         popup.add(menuKurveerweitern);
+        menuPanelRefresh = new JMenuItem("Panels refresh");
+        menuPanelRefresh.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent event) {
+                refreshPanels();
+            }
+        });
+        popup.add(menuPanelRefresh);
+        
         menuReset = new JMenuItem("Reset");
         menuReset.addMouseListener(new MouseAdapter() {
             @Override
@@ -113,6 +126,11 @@ public class BezierKurvenApplet extends JApplet {
 
     private void resetKordinatenPunkte() {
         bezierKurven[bezierKurvenzaehler].resetKordinatenPunkte();
+    }
+    public void refreshPanels(){
+        for(int i=0;i<=bezierKurvenzaehler;i++){
+            bezierKurven[i].refreshPanels();
+        }
     }
 
     private class BezierKurvenBerechnung {
@@ -299,6 +317,11 @@ public class BezierKurvenApplet extends JApplet {
             //Reset der Bersét-Kurve
             for (int index = 0; index < kurvenPunkte.length; index++) {
                 kurvenPunkte[index] = null;
+            }
+        }
+        public void refreshPanels(){
+            for(int i=0;i<punkteZaehler;i++){
+                kordPunkt[i].setLocation(eingabePunkte[i]);
             }
         }
 
