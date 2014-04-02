@@ -1,4 +1,5 @@
 build
 manifest.mf
 applet.policy
-/dist/
+/dist
+/bin
