@@ -8,8 +8,6 @@
   <property name="dist"  location="dist"/>
 
   <target name="init">
-    <!-- Create the time stamp -->
-    <tstamp/>
     <!-- Create the build directory structure used by compile -->
     <mkdir dir="${build}"/>
   </target>
@@ -17,16 +15,16 @@
   <target name="compile" depends="init"
         description="compile the source " >
     <!-- Compile the java code from ${src} into ${build} -->
-    <javac srcdir="${src}" destdir="${build}"/>
+    <javac srcdir="${src}" destdir="${build}"
+        includeAntRuntime="false"/>
   </target>
 
-  <target name="dist" depends="compile"
+  <target name="dist" depends="clean, compile"
         description="generate the distribution" >
     <!-- Create the distribution directory -->
-    <mkdir dir="${dist}/lib"/>
+    <mkdir dir="${dist}"/>
 
-    <!-- Put everything in ${build} into the Bezier-${DSTAMP}.jar file -->
-    <!--<jar jarfile="${dist}/Bezier-${DSTAMP}.jar" basedir="${build}"/>-->
+    <!-- Put everything in ${build} into the Bezier.jar file -->
     <jar jarfile="${dist}/Bezier.jar" basedir="${build}"/>
     <copy todir="${dist}/">
       <resources>
