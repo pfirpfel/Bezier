@@ -25,7 +25,11 @@
     <mkdir dir="${dist}"/>
 
     <!-- Put everything in ${build} into the Bezier.jar file -->
-    <jar jarfile="${dist}/Bezier.jar" basedir="${build}"/>
+    <jar jarfile="${dist}/Bezier.jar" basedir="${build}">
+      <manifest>
+        <attribute name="Permissions" value="sandbox"/>
+      </manifest>
+    </jar>
     <copy todir="${dist}/">
       <resources>
         <file file="${src}/bezier/kurven/BezierKurven.html"/>
